@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Database1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tblDetail">
+          <Key>
+            <PropertyRef Name="DetailId" />
+          </Key>
+          <Property Name="DetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TransactionId" Type="int" Nullable="false" />
+          <Property Name="ProductName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="SellPrice" Type="int" Nullable="false" />
+          <Property Name="BuyPrice" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblExpedition">
+          <Key>
+            <PropertyRef Name="ExpeditionId" />
+          </Key>
+          <Property Name="ExpeditionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ExpeditionName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Address" Type="varchar(max)" Nullable="false" />
+          <Property Name="Phone" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="AdditionalContact" Type="varchar" MaxLength="50" />
+          <Property Name="AdditionalPhone" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tblJoin">
+          <Key>
+            <PropertyRef Name="JoinId" />
+          </Key>
+          <Property Name="JoinId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="ExpeditionId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblShop">
+          <Key>
+            <PropertyRef Name="ShopId" />
+          </Key>
+          <Property Name="ShopId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShopName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Address" Type="varchar(max)" Nullable="false" />
+          <Property Name="Telephone" Type="varchar" MaxLength="50" />
+          <Property Name="OwnerName" Type="varchar" MaxLength="50" />
+          <Property Name="OwnerPhone" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tblTransaction">
+          <Key>
+            <PropertyRef Name="TransactionId" />
+          </Key>
+          <Property Name="TransactionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShopId" Type="int" Nullable="false" />
+          <Property Name="NotaNumber" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="Discount" Type="float" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Information" Type="varchar" MaxLength="50" />
+          <Property Name="Status" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="TotalHarga" Type="int" />
+        </EntityType>
+        <Association Name="FK_Table_TotblShop">
+          <End Role="tblShop" Type="Self.tblShop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="tblTransaction" Type="Self.tblTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblShop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="tblTransaction">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblJoin_ToTable">
+          <End Role="tblShop" Type="Self.tblShop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="tblJoin" Type="Self.tblJoin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblShop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="tblJoin">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblJoin_ToTable_1">
+          <End Role="tblExpedition" Type="Self.tblExpedition" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="tblJoin" Type="Self.tblJoin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblExpedition">
+              <PropertyRef Name="ExpeditionId" />
+            </Principal>
+            <Dependent Role="tblJoin">
+              <PropertyRef Name="ExpeditionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Database1ModelStoreContainer">
+          <EntitySet Name="tblDetail" EntityType="Self.tblDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblExpedition" EntityType="Self.tblExpedition" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblJoin" EntityType="Self.tblJoin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblShop" EntityType="Self.tblShop" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblTransaction" EntityType="Self.tblTransaction" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Table_TotblShop" Association="Self.FK_Table_TotblShop">
+            <End Role="tblShop" EntitySet="tblShop" />
+            <End Role="tblTransaction" EntitySet="tblTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblJoin_ToTable" Association="Self.FK_tblJoin_ToTable">
+            <End Role="tblShop" EntitySet="tblShop" />
+            <End Role="tblJoin" EntitySet="tblJoin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblJoin_ToTable_1" Association="Self.FK_tblJoin_ToTable_1">
+            <End Role="tblExpedition" EntitySet="tblExpedition" />
+            <End Role="tblJoin" EntitySet="tblJoin" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Database1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tblDetail">
+          <Key>
+            <PropertyRef Name="DetailId" />
+          </Key>
+          <Property Name="DetailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TransactionId" Type="Int32" Nullable="false" />
+          <Property Name="ProductName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="SellPrice" Type="Int32" Nullable="false" />
+          <Property Name="BuyPrice" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tblTransaction" Relationship="Self.FK_Table_TotblTransaction" FromRole="tblDetail" ToRole="tblTransaction" />
+        </EntityType>
+        <EntityType Name="tblExpedition">
+          <Key>
+            <PropertyRef Name="ExpeditionId" />
+          </Key>
+          <Property Name="ExpeditionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ExpeditionName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="AdditionalContact" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AdditionalPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tblJoins" Relationship="Self.FK_tblJoin_ToTable_1" FromRole="tblExpedition" ToRole="tblJoin" />
+        </EntityType>
+        <EntityType Name="tblJoin">
+          <Key>
+            <PropertyRef Name="JoinId" />
+          </Key>
+          <Property Name="JoinId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="ExpeditionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tblExpedition" Relationship="Self.FK_tblJoin_ToTable_1" FromRole="tblJoin" ToRole="tblExpedition" />
+          <NavigationProperty Name="tblShop" Relationship="Self.FK_tblJoin_ToTable" FromRole="tblJoin" ToRole="tblShop" />
+        </EntityType>
+        <EntityType Name="tblShop">
+          <Key>
+            <PropertyRef Name="ShopId" />
+          </Key>
+          <Property Name="ShopId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShopName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Telephone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OwnerName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OwnerPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tblJoins" Relationship="Self.FK_tblJoin_ToTable" FromRole="tblShop" ToRole="tblJoin" />
+          <NavigationProperty Name="tblTransactions" Relationship="Self.FK_Table_TotblShop" FromRole="tblShop" ToRole="tblTransaction" />
+        </EntityType>
+        <EntityType Name="tblTransaction">
+          <Key>
+            <PropertyRef Name="TransactionId" />
+          </Key>
+          <Property Name="TransactionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="NotaNumber" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Discount" Type="Double" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Information" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="tblDetails" Relationship="Self.FK_Table_TotblTransaction" FromRole="tblTransaction" ToRole="tblDetail" />
+          <NavigationProperty Name="tblShop" Relationship="Self.FK_Table_TotblShop" FromRole="tblTransaction" ToRole="tblShop" />
+          <Property Name="TotalHarga" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_Table_TotblTransaction">
+          <End Role="tblTransaction" Type="Self.tblTransaction" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="tblDetail" Type="Self.tblDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblTransaction">
+              <PropertyRef Name="TransactionId" />
+            </Principal>
+            <Dependent Role="tblDetail">
+              <PropertyRef Name="TransactionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblJoin_ToTable_1">
+          <End Role="tblExpedition" Type="Self.tblExpedition" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="tblJoin" Type="Self.tblJoin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblExpedition">
+              <PropertyRef Name="ExpeditionId" />
+            </Principal>
+            <Dependent Role="tblJoin">
+              <PropertyRef Name="ExpeditionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblJoin_ToTable">
+          <End Role="tblShop" Type="Self.tblShop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="tblJoin" Type="Self.tblJoin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblShop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="tblJoin">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Table_TotblShop">
+          <End Role="tblShop" Type="Self.tblShop" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="tblTransaction" Type="Self.tblTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblShop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="tblTransaction">
+              <PropertyRef Name="ShopId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Database1Entities6" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tblDetails" EntityType="Self.tblDetail" />
+          <EntitySet Name="tblExpeditions" EntityType="Self.tblExpedition" />
+          <EntitySet Name="tblJoins" EntityType="Self.tblJoin" />
+          <EntitySet Name="tblShops" EntityType="Self.tblShop" />
+          <EntitySet Name="tblTransactions" EntityType="Self.tblTransaction" />
+          <AssociationSet Name="FK_Table_TotblTransaction" Association="Self.FK_Table_TotblTransaction">
+            <End Role="tblTransaction" EntitySet="tblTransactions" />
+            <End Role="tblDetail" EntitySet="tblDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblJoin_ToTable_1" Association="Self.FK_tblJoin_ToTable_1">
+            <End Role="tblExpedition" EntitySet="tblExpeditions" />
+            <End Role="tblJoin" EntitySet="tblJoins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblJoin_ToTable" Association="Self.FK_tblJoin_ToTable">
+            <End Role="tblShop" EntitySet="tblShops" />
+            <End Role="tblJoin" EntitySet="tblJoins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Table_TotblShop" Association="Self.FK_Table_TotblShop">
+            <End Role="tblShop" EntitySet="tblShops" />
+            <End Role="tblTransaction" EntitySet="tblTransactions" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Database1ModelStoreContainer" CdmEntityContainer="Database1Entities6">
+          <EntitySetMapping Name="tblDetails">
+            <EntityTypeMapping TypeName="Database1Model.tblDetail">
+              <MappingFragment StoreEntitySet="tblDetail">
+                <ScalarProperty Name="DetailId" ColumnName="DetailId" />
+                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="SellPrice" ColumnName="SellPrice" />
+                <ScalarProperty Name="BuyPrice" ColumnName="BuyPrice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblExpeditions">
+            <EntityTypeMapping TypeName="Database1Model.tblExpedition">
+              <MappingFragment StoreEntitySet="tblExpedition">
+                <ScalarProperty Name="ExpeditionId" ColumnName="ExpeditionId" />
+                <ScalarProperty Name="ExpeditionName" ColumnName="ExpeditionName" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="AdditionalContact" ColumnName="AdditionalContact" />
+                <ScalarProperty Name="AdditionalPhone" ColumnName="AdditionalPhone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblJoins">
+            <EntityTypeMapping TypeName="Database1Model.tblJoin">
+              <MappingFragment StoreEntitySet="tblJoin">
+                <ScalarProperty Name="JoinId" ColumnName="JoinId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ExpeditionId" ColumnName="ExpeditionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblShops">
+            <EntityTypeMapping TypeName="Database1Model.tblShop">
+              <MappingFragment StoreEntitySet="tblShop">
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="ShopName" ColumnName="ShopName" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Telephone" ColumnName="Telephone" />
+                <ScalarProperty Name="OwnerName" ColumnName="OwnerName" />
+                <ScalarProperty Name="OwnerPhone" ColumnName="OwnerPhone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblTransactions">
+            <EntityTypeMapping TypeName="Database1Model.tblTransaction">
+              <MappingFragment StoreEntitySet="tblTransaction">
+                <ScalarProperty Name="TotalHarga" ColumnName="TotalHarga" />
+                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
+                <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+                <ScalarProperty Name="NotaNumber" ColumnName="NotaNumber" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Information" ColumnName="Information" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
