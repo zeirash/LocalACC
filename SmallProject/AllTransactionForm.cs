@@ -17,7 +17,7 @@ namespace SmallProject
     {
         Database1Entities6 de = new Database1Entities6();
         DateTime date;
-        String myDate, status, month, datemonth;
+        String myDate, status, month, datemonth, year, dateyear;
         BindingSource bdall;
         int piutang = 0;
         public AllTransactionForm()
@@ -27,26 +27,54 @@ namespace SmallProject
             date = DateTime.Now;
             myDate = dtpTransactionSearch.Value.ToString("dd-MMM-yy");
             date = DateTime.ParseExact(myDate, "dd-MMM-yy", CultureInfo.InvariantCulture);
+
             //set bulan combobox value and text
             cmbMonth.DisplayMember = "Month";
             cmbMonth.ValueMember = "Value";
             var items = new[]
             {
-                new {Month="January", Value="1"},
-                new {Month="February", Value="2"},
-                new {Month="March", Value="3"},
-                new {Month="April", Value="4"},
-                new {Month="Mei", Value="5"},
-                new {Month="June", Value="6"},
-                new {Month="July", Value="7"},
-                new {Month="August", Value="8"},
-                new {Month="September", Value="9"},
-                new {Month="October", Value="10"},
-                new {Month="November", Value="11"},
-                new {Month="December", Value="12"},
+                new {Month="January", Value="Jan"},
+                new {Month="February", Value="Feb"},
+                new {Month="March", Value="Mar"},
+                new {Month="April", Value="Apr"},
+                new {Month="May", Value="May"},
+                new {Month="June", Value="Jun"},
+                new {Month="July", Value="Jul"},
+                new {Month="August", Value="Aug"},
+                new {Month="September", Value="Sep"},
+                new {Month="October", Value="Oct"},
+                new {Month="November", Value="Nov"},
+                new {Month="December", Value="Dec"},
             };
             cmbMonth.DataSource = items;
             cmbMonth.SelectedIndex = -1;
+
+            //set tahun combobox value and text
+            cmbYear.DisplayMember = "Year";
+            cmbYear.ValueMember = "ValueYear";
+            string sdate = DateTime.Now.ToString();
+            DateTime datevalue = (Convert.ToDateTime(sdate.ToString()));
+            year = datevalue.Year.ToString();
+
+            var yearItems = new object();
+            //if value already exist in combo box year
+            if (cmbYear.Items.Count == 0)
+            {
+                yearItems = new[] { new { Year = year, ValueYear = year } };
+            }
+            else
+            {
+                for (int i = 0; i < cmbYear.Items.Count; i++)
+                {
+                    if (year == cmbYear.GetItemText(cmbYear.Items[i])) return;
+                    else
+                    {
+                        yearItems = new[] { new { Year = year, ValueYear = year } };
+                    }
+                }
+            }
+            cmbYear.DataSource = yearItems;
+            cmbYear.SelectedIndex = -1;
         }
 
         private void btnShowAll_Click(object sender, EventArgs e)
@@ -84,6 +112,7 @@ namespace SmallProject
             radLunas.Checked = false;
             txtSearch.Text = "";
             cmbMonth.SelectedIndex = -1;
+            cmbYear.SelectedIndex = -1;
         }
 
         private void update_data()
@@ -96,7 +125,7 @@ namespace SmallProject
                                     group x by x.TransactionId into total
                                     join y in de.tblTransactions on total.Key equals y.TransactionId
                                     join z in de.tblShops on y.ShopId equals z.ShopId
-                                    where z.ShopName.Contains(txtSearch.Text) && y.NotaNumber.Contains(txtNotaNum.Text) && datemonth == month
+                                    where z.ShopName.Contains(txtSearch.Text) && y.NotaNumber.Contains(txtNotaNum.Text) && datemonth == month && dateyear == year
                                     orderby z.ShopName ascending
                                     select new
                                     {
@@ -118,7 +147,7 @@ namespace SmallProject
                                     group x by x.TransactionId into total
                                     join y in de.tblTransactions on total.Key equals y.TransactionId
                                     join z in de.tblShops on y.ShopId equals z.ShopId
-                                    where z.ShopName.Contains(txtSearch.Text) && y.NotaNumber.Contains(txtNotaNum.Text) && y.Status == status && datemonth == month
+                                    where z.ShopName.Contains(txtSearch.Text) && y.NotaNumber.Contains(txtNotaNum.Text) && y.Status == status && datemonth == month && dateyear == year
                                     orderby z.ShopName ascending
                                     select new
                                     {
@@ -184,6 +213,18 @@ namespace SmallProject
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
+            update_data();
+        }
+
+        private void cmbYear_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            year = cmbYear.SelectedValue.ToString();
+            var query = (from x in de.tblDetails
+                         group x by x.TransactionId into total
+                         join y in de.tblTransactions on total.Key equals y.TransactionId
+                         join z in de.tblShops on y.ShopId equals z.ShopId
+                         select y.Date).FirstOrDefault();
+            dateyear = query.ToString("yyyy");
             update_data();
         }
 
@@ -264,37 +305,8 @@ namespace SmallProject
                          join y in de.tblTransactions on total.Key equals y.TransactionId
                          join z in de.tblShops on y.ShopId equals z.ShopId
                          select y.Date).FirstOrDefault();
-            datemonth = query.ToString("MM");
+            datemonth = query.ToString("MMM");
             update_data();
-            /*
-            bdall = new BindingSource();
-            bdall.DataSource = (from x in de.tblDetails
-                                group x by x.TransactionId into total
-                                join y in de.tblTransactions on total.Key equals y.TransactionId
-                                join z in de.tblShops on y.ShopId equals z.ShopId
-                                where datemonth == month
-                                select new
-                                {
-                                    Toko = z.ShopName,
-                                    NomorNota = y.NotaNumber,
-                                    Alamat = z.Address,
-                                    Tanggal = y.Date,
-                                    Tagihan = total.Sum(t => t.SellPrice * t.Quantity),
-                                    Status = y.Status,
-                                    Informasi = y.Information
-                                }).ToList();
-            allTtrans_grid.DataSource = bdall;
-            foreach (DataGridViewRow rows in allTtrans_grid.Rows)
-            {
-                piutang += int.Parse(rows.Cells[4].Value.ToString());
-            }
-            lblPiutang.Text = "Total piutang: Rp. " + piutang.ToString("##,#");
-            if (allTtrans_grid.RowCount > 0)
-            {
-                this.allTtrans_grid.Columns["Tagihan"].DefaultCellStyle.Format = "##,#";
-                this.allTtrans_grid.Columns["Tanggal"].DefaultCellStyle.Format = "dd-MMM-yyyy";
-            }
-            */
         }
 
         private void dtpTransactionSearch_ValueChanged(object sender, EventArgs e)

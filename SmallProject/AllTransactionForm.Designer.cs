@@ -35,6 +35,7 @@
             this.dtpTransactionSearch = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cmbMonth = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtNotaNum = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -48,7 +49,8 @@
             this.btnSortName = new System.Windows.Forms.Button();
             this.btnSortDate = new System.Windows.Forms.Button();
             this.lblPiutang = new System.Windows.Forms.Label();
-            this.cmbMonth = new System.Windows.Forms.ComboBox();
+            this.cmbYear = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.allTtrans_grid)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -108,7 +110,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(17, 55);
+            this.label1.Location = new System.Drawing.Point(17, 28);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(86, 20);
             this.label1.TabIndex = 28;
@@ -116,6 +118,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cmbYear);
+            this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.cmbMonth);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.txtNotaNum);
@@ -129,15 +133,25 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(982, 128);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(344, 296);
+            this.groupBox1.Size = new System.Drawing.Size(344, 305);
             this.groupBox1.TabIndex = 29;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Search by";
             // 
+            // cmbMonth
+            // 
+            this.cmbMonth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMonth.FormattingEnabled = true;
+            this.cmbMonth.Location = new System.Drawing.Point(121, 127);
+            this.cmbMonth.Name = "cmbMonth";
+            this.cmbMonth.Size = new System.Drawing.Size(195, 28);
+            this.cmbMonth.TabIndex = 37;
+            this.cmbMonth.SelectionChangeCommitted += new System.EventHandler(this.cmbMonth_SelectionChangeCommitted);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(17, 157);
+            this.label5.Location = new System.Drawing.Point(17, 130);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(50, 20);
             this.label5.TabIndex = 36;
@@ -145,7 +159,7 @@
             // 
             // txtNotaNum
             // 
-            this.txtNotaNum.Location = new System.Drawing.Point(121, 103);
+            this.txtNotaNum.Location = new System.Drawing.Point(121, 76);
             this.txtNotaNum.Name = "txtNotaNum";
             this.txtNotaNum.Size = new System.Drawing.Size(195, 26);
             this.txtNotaNum.TabIndex = 35;
@@ -154,7 +168,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(17, 106);
+            this.label3.Location = new System.Drawing.Point(17, 79);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 20);
             this.label3.TabIndex = 34;
@@ -163,7 +177,7 @@
             // radBlmLunas
             // 
             this.radBlmLunas.AutoSize = true;
-            this.radBlmLunas.Location = new System.Drawing.Point(202, 201);
+            this.radBlmLunas.Location = new System.Drawing.Point(202, 221);
             this.radBlmLunas.Name = "radBlmLunas";
             this.radBlmLunas.Size = new System.Drawing.Size(114, 24);
             this.radBlmLunas.TabIndex = 33;
@@ -174,7 +188,7 @@
             // radLunas
             // 
             this.radLunas.AutoSize = true;
-            this.radLunas.Location = new System.Drawing.Point(125, 201);
+            this.radLunas.Location = new System.Drawing.Point(125, 221);
             this.radLunas.Name = "radLunas";
             this.radLunas.Size = new System.Drawing.Size(71, 24);
             this.radLunas.TabIndex = 32;
@@ -184,7 +198,7 @@
             // 
             // txtSearch
             // 
-            this.txtSearch.Location = new System.Drawing.Point(121, 52);
+            this.txtSearch.Location = new System.Drawing.Point(121, 25);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(195, 26);
             this.txtSearch.TabIndex = 31;
@@ -193,7 +207,7 @@
             // btnSearch
             // 
             this.btnSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSearch.Location = new System.Drawing.Point(21, 245);
+            this.btnSearch.Location = new System.Drawing.Point(21, 254);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(295, 34);
             this.btnSearch.TabIndex = 30;
@@ -204,7 +218,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(17, 201);
+            this.label2.Location = new System.Drawing.Point(17, 221);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(56, 20);
             this.label2.TabIndex = 29;
@@ -263,15 +277,24 @@
             this.lblPiutang.TabIndex = 39;
             this.lblPiutang.Text = "Total piutang: Rp. 0";
             // 
-            // cmbMonth
+            // cmbYear
             // 
-            this.cmbMonth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbMonth.FormattingEnabled = true;
-            this.cmbMonth.Location = new System.Drawing.Point(121, 154);
-            this.cmbMonth.Name = "cmbMonth";
-            this.cmbMonth.Size = new System.Drawing.Size(195, 28);
-            this.cmbMonth.TabIndex = 37;
-            this.cmbMonth.SelectionChangeCommitted += new System.EventHandler(this.cmbMonth_SelectionChangeCommitted);
+            this.cmbYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbYear.FormattingEnabled = true;
+            this.cmbYear.Location = new System.Drawing.Point(121, 173);
+            this.cmbYear.Name = "cmbYear";
+            this.cmbYear.Size = new System.Drawing.Size(195, 28);
+            this.cmbYear.TabIndex = 39;
+            this.cmbYear.SelectionChangeCommitted += new System.EventHandler(this.cmbYear_SelectionChangeCommitted);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(17, 176);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(54, 20);
+            this.label6.TabIndex = 38;
+            this.label6.Text = "Tahun";
             // 
             // AllTransactionForm
             // 
@@ -318,5 +341,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label lblPiutang;
         private System.Windows.Forms.ComboBox cmbMonth;
+        private System.Windows.Forms.ComboBox cmbYear;
+        private System.Windows.Forms.Label label6;
     }
 }
