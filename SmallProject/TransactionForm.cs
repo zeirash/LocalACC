@@ -114,28 +114,34 @@ namespace SmallProject
             this.detail_grid.Columns["HargaJual"].DefaultCellStyle.Format = "##,#";
             this.detail_grid.Columns["HargaBeli"].DefaultCellStyle.Format = "##,#";
             this.detail_grid.Columns["TotalJual"].DefaultCellStyle.Format = "##,#";
-            this.detail_grid.Columns["TotalBeli"].DefaultCellStyle.Format = "##,#";
+            this.detail_grid.Columns["TotalBeli"].DefaultCellStyle.Format = "##,#";            
+        }
 
-
-            //get discount
-            var query = (from x in de.tblTransactions
-                         join y in de.tblDetails on x.TransactionId equals y.TransactionId
-                         where x.TransactionId == transactionId
-                         select x).FirstOrDefault();
-
-            if (detail_grid.RowCount > 0)
+        private void update_sum()
+        {
+            if (lblTransId.Text != "")
             {
-                totalBeli = 0;
-                totalJual = 0;
-                foreach (DataGridViewRow rows in detail_grid.Rows)
-                {
-                    totalBeli += int.Parse(rows.Cells[6].Value.ToString());
-                    totalJual += int.Parse(rows.Cells[5].Value.ToString());
-                }
-                totalJual = totalJual - totalJual * (int)query.Discount / 100;
+                int transactionId = int.Parse(lblTransId.Text.ToString());
+                //get discount
+                var query = (from x in de.tblTransactions
+                             join y in de.tblDetails on x.TransactionId equals y.TransactionId
+                             where x.TransactionId == transactionId
+                             select x).FirstOrDefault();
 
-                lblTotalJual.Text = totalJual.ToString("##,#");
-                lblTotalModal.Text = totalBeli.ToString("##,#");
+                if (detail_grid.RowCount > 0)
+                {
+                    totalBeli = 0;
+                    totalJual = 0;
+                    foreach (DataGridViewRow rows in detail_grid.Rows)
+                    {
+                        totalBeli += int.Parse(rows.Cells[6].Value.ToString());
+                        totalJual += int.Parse(rows.Cells[5].Value.ToString());
+                    }
+                    totalJual = totalJual - totalJual * (int)query.Discount / 100;
+
+                    lblTotalJual.Text = totalJual.ToString("##,#");
+                    lblTotalModal.Text = totalBeli.ToString("##,#");
+                }
             }
         }
 
@@ -213,6 +219,7 @@ namespace SmallProject
                 else radBlmLunas.Checked = true;
 
                 update_detail();
+                update_sum();
             }
         }
 
@@ -246,6 +253,7 @@ namespace SmallProject
         private void btnShowAll_Click(object sender, EventArgs e)
         {
             update_transaction();
+            update_sum();
         }
 
         private void btnShowDate_Click(object sender, EventArgs e)
@@ -325,6 +333,7 @@ namespace SmallProject
                 else return;
                 de.SaveChanges();
                 update_transaction();
+                update_sum();
             }
         }
 
@@ -382,6 +391,7 @@ namespace SmallProject
             de.SaveChanges();
             clear_detail();
             update_transaction();
+            update_sum();
             _tInsert = _tUpdate = false;
             modeDetail(true);
             modeTransaction(true);
@@ -601,12 +611,13 @@ namespace SmallProject
             update_transaction();
             _dInsert = _dUpdate = false;
             //mode
-            modeTransaction(true);
+            //modeTransaction(true);
+            modeTransaction(false);
             modeDetail(true);
-            btnTInsert.Enabled = false;
-            btnTUpdate.Enabled = false;
-            btnTDelete.Enabled = false;
-            btnTSubmit.Enabled = true;
+            //btnTInsert.Enabled = false;
+            //btnTUpdate.Enabled = false;
+            //btnTDelete.Enabled = false;
+            //btnTSubmit.Enabled = true;
             transaction_grid.Enabled = false;
             detail_grid.Enabled = true;
         }
@@ -616,7 +627,7 @@ namespace SmallProject
             _dInsert = _dUpdate = false;
             clear_detail();
             //mode
-            modeTransaction(true);
+            modeTransaction(false);
             modeDetail(true);
             btnTInsert.Enabled = false;
             btnTUpdate.Enabled = false;
