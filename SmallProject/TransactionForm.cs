@@ -611,13 +611,8 @@ namespace SmallProject
             update_transaction();
             _dInsert = _dUpdate = false;
             //mode
-            //modeTransaction(true);
             modeTransaction(false);
             modeDetail(true);
-            //btnTInsert.Enabled = false;
-            //btnTUpdate.Enabled = false;
-            //btnTDelete.Enabled = false;
-            //btnTSubmit.Enabled = true;
             transaction_grid.Enabled = false;
             detail_grid.Enabled = true;
         }
