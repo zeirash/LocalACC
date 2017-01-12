@@ -89,7 +89,7 @@ namespace SmallProject
             btnDCancel.Enabled = !change;
             txtNamaBarang.Enabled = !change;
             txtQuantity.Enabled = !change;
-            txtHrgaBeli.Enabled = !change;
+            //txtHrgaBeli.Enabled = !change;
             txtHrgaJual.Enabled = !change;
         }
 
@@ -106,15 +106,13 @@ namespace SmallProject
                                     NamaBarang = y.ProductName,
                                     y.Quantity,
                                     HargaJual = y.SellPrice,
-                                    HargaBeli = y.BuyPrice,
-                                    TotalJual = y.SellPrice * y.Quantity,
-                                    TotalBeli = y.BuyPrice * y.Quantity
+                                    TotalJual = y.SellPrice * y.Quantity
                                 }).ToList();
             detail_grid.DataSource = bdDet;
             this.detail_grid.Columns["HargaJual"].DefaultCellStyle.Format = "##,#";
-            this.detail_grid.Columns["HargaBeli"].DefaultCellStyle.Format = "##,#";
+            //this.detail_grid.Columns["HargaBeli"].DefaultCellStyle.Format = "##,#";
             this.detail_grid.Columns["TotalJual"].DefaultCellStyle.Format = "##,#";
-            this.detail_grid.Columns["TotalBeli"].DefaultCellStyle.Format = "##,#";            
+            //this.detail_grid.Columns["TotalBeli"].DefaultCellStyle.Format = "##,#";            
         }
 
         private void update_sum()
@@ -130,17 +128,17 @@ namespace SmallProject
 
                 if (detail_grid.RowCount > 0)
                 {
-                    totalBeli = 0;
+                    //totalBeli = 0;
                     totalJual = 0;
                     foreach (DataGridViewRow rows in detail_grid.Rows)
                     {
-                        totalBeli += int.Parse(rows.Cells[6].Value.ToString());
-                        totalJual += int.Parse(rows.Cells[5].Value.ToString());
+                        //totalBeli += int.Parse(rows.Cells[6].Value.ToString());
+                        totalJual += int.Parse(rows.Cells[4].Value.ToString());
                     }
                     totalJual = totalJual - totalJual * (int)query.Discount / 100;
 
                     lblTotalJual.Text = totalJual.ToString("##,#");
-                    lblTotalModal.Text = totalBeli.ToString("##,#");
+                    //lblTotalModal.Text = totalBeli.ToString("##,#");
                 }
             }
         }
@@ -161,7 +159,7 @@ namespace SmallProject
             detailId.Text = "";
             txtNamaBarang.Text = "";
             txtQuantity.Text = "";
-            txtHrgaBeli.Text = "";
+            //txtHrgaBeli.Text = "";
             txtHrgaJual.Text = "";
         }
 
@@ -233,8 +231,6 @@ namespace SmallProject
                 txtQuantity.Text = detail_grid.Rows[e.RowIndex].Cells[2].Value.ToString();
                 txtHrgaJual.Text = detail_grid.Rows[e.RowIndex].Cells[3].Value.ToString();
                 txtHrgaJual.Text = string.Format("{0:##,#0}", int.Parse(txtHrgaJual.Text));
-                txtHrgaBeli.Text = detail_grid.Rows[e.RowIndex].Cells[4].Value.ToString();
-                txtHrgaBeli.Text = string.Format("{0:##,#0}", int.Parse(txtHrgaBeli.Text));
             }
         }
 
@@ -448,19 +444,6 @@ namespace SmallProject
                 isSprice = false;
             }
             else isSprice = true;
-
-            //harga beli
-            if (txtHrgaBeli.Text == "")
-            {
-                MessageBox.Show("Harga beli harus di isi");
-                isBprice = false;
-            }
-            else if (!(Int64.TryParse(txtHrgaBeli.Text, out temp)))
-            {
-                MessageBox.Show("Harga beli harus angka");
-                isBprice = false;
-            }
-            else isBprice = true;
         }
 
         private void btnDInsert_Click(object sender, EventArgs e)
@@ -574,8 +557,7 @@ namespace SmallProject
                         TransactionId = int.Parse(query.TransactionId.ToString()),
                         ProductName = txtNamaBarang.Text.ToUpper(),
                         Quantity = int.Parse(txtQuantity.Text),
-                        SellPrice = int.Parse(txtHrgaJual.Text),
-                        BuyPrice = int.Parse(txtHrgaBeli.Text)
+                        SellPrice = int.Parse(txtHrgaJual.Text)
                     };
                     de.tblDetails.Add(newDetail);
                     MessageBox.Show("Success input detail baru");
@@ -598,7 +580,7 @@ namespace SmallProject
                     updateDetail.ProductName = txtNamaBarang.Text.ToUpper();
                     updateDetail.Quantity = int.Parse(txtQuantity.Text);
                     updateDetail.SellPrice = int.Parse(txtHrgaJual.Text);
-                    updateDetail.BuyPrice = int.Parse(txtHrgaBeli.Text);
+                    //updateDetail.BuyPrice = int.Parse(txtHrgaBeli.Text);
 
                     MessageBox.Show("Success update data");
                 }
