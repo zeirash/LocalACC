@@ -17,7 +17,7 @@ namespace SmallProject
     {
         Database1Entities6 de = new Database1Entities6();
         DateTime date;
-        String myDate, status, month, datemonth, year, dateyear;
+        String myDate, status, month="", datemonth="", year, dateyear="", selectedyear="";
         BindingSource bdall;
         int piutang = 0;
         public AllTransactionForm()
@@ -94,7 +94,8 @@ namespace SmallProject
                                     Tanggal = y.Date,
                                     Tagihan = total.Sum(t => t.SellPrice * t.Quantity),
                                     Status = y.Status,
-                                    Informasi = y.Information
+                                    Informasi = y.Information,
+                                    TanggalLunas = y.PaidDate
                                 }).ToList();
             allTtrans_grid.DataSource = bdall;
             foreach (DataGridViewRow rows in allTtrans_grid.Rows)
@@ -119,13 +120,14 @@ namespace SmallProject
         {
             piutang = 0;
             bdall = new BindingSource();
+            if (cmbYear.SelectedIndex == -1) selectedyear = "";
             if (radLunas.Checked == false && radBlmLunas.Checked == false)
             {
                 bdall.DataSource = (from x in de.tblDetails
                                     group x by x.TransactionId into total
                                     join y in de.tblTransactions on total.Key equals y.TransactionId
                                     join z in de.tblShops on y.ShopId equals z.ShopId
-                                    where z.ShopName.Contains(txtSearch.Text) && y.NotaNumber.Contains(txtNotaNum.Text) && datemonth == month && dateyear == year
+                                    where z.ShopName.Contains(txtSearch.Text) && y.NotaNumber.Contains(txtNotaNum.Text) && datemonth == month && dateyear == selectedyear
                                     orderby z.ShopName ascending
                                     select new
                                     {
@@ -135,7 +137,8 @@ namespace SmallProject
                                         Tanggal = y.Date,
                                         Tagihan = total.Sum(t => t.SellPrice * t.Quantity),
                                         Status = y.Status,
-                                        Informasi = y.Information
+                                        Informasi = y.Information,
+                                        TanggalLunas = y.PaidDate
                                     }).ToList();
             }
             else
@@ -147,7 +150,7 @@ namespace SmallProject
                                     group x by x.TransactionId into total
                                     join y in de.tblTransactions on total.Key equals y.TransactionId
                                     join z in de.tblShops on y.ShopId equals z.ShopId
-                                    where z.ShopName.Contains(txtSearch.Text) && y.NotaNumber.Contains(txtNotaNum.Text) && y.Status == status && datemonth == month && dateyear == year
+                                    where z.ShopName.Contains(txtSearch.Text) && y.NotaNumber.Contains(txtNotaNum.Text) && y.Status == status && datemonth == month && dateyear == selectedyear
                                     orderby z.ShopName ascending
                                     select new
                                     {
@@ -157,7 +160,8 @@ namespace SmallProject
                                         Tanggal = y.Date,
                                         Tagihan = total.Sum(t => t.SellPrice * t.Quantity),
                                         Status = y.Status,
-                                        Informasi = y.Information
+                                        Informasi = y.Information,
+                                        TanggalLunas = y.PaidDate
                                     }).ToList();
             }
             allTtrans_grid.DataSource = bdall;
@@ -196,7 +200,8 @@ namespace SmallProject
                                     Tanggal = y.Date,
                                     Tagihan = total.Sum(t => t.SellPrice * t.Quantity),
                                     Status = y.Status,
-                                    Informasi = y.Information
+                                    Informasi = y.Information,
+                                    TanggalLunas = y.PaidDate
                                 }).ToList();
             allTtrans_grid.DataSource = bdall;
             foreach (DataGridViewRow rows in allTtrans_grid.Rows)
@@ -218,7 +223,7 @@ namespace SmallProject
 
         private void cmbYear_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            year = cmbYear.SelectedValue.ToString();
+            selectedyear = cmbYear.SelectedValue.ToString();
             var query = (from x in de.tblDetails
                          group x by x.TransactionId into total
                          join y in de.tblTransactions on total.Key equals y.TransactionId
@@ -245,7 +250,8 @@ namespace SmallProject
                                     Tanggal = y.Date,
                                     Tagihan = total.Sum(t => t.SellPrice * t.Quantity),
                                     Status = y.Status,
-                                    Informasi = y.Information
+                                    Informasi = y.Information,
+                                    TanggalLunas = y.PaidDate
                                 }).ToList();
             allTtrans_grid.DataSource = bdall;
             foreach (DataGridViewRow rows in allTtrans_grid.Rows)
@@ -276,7 +282,8 @@ namespace SmallProject
                                     Tanggal = y.Date,
                                     Tagihan = total.Sum(t => t.SellPrice * t.Quantity),
                                     Status = y.Status,
-                                    Informasi = y.Information
+                                    Informasi = y.Information,
+                                    TanggalLunas = y.PaidDate
                                 }).ToList();
             allTtrans_grid.DataSource = bdall;
             foreach (DataGridViewRow rows in allTtrans_grid.Rows)

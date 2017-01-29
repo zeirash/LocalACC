@@ -12,15 +12,11 @@ namespace SmallProject
     using System;
     using System.Collections.Generic;
     
-    public partial class tblDetail
+    public partial class tblProduct
     {
-        public int DetailId { get; set; }
-        public int TransactionId { get; set; }
+        public int ProductId { get; set; }
         public string ProductName { get; set; }
-        public int Quantity { get; set; }
         public int SellPrice { get; set; }
-        public Nullable<int> BuyPrice { get; set; }
-    
-        public virtual tblTransaction tblTransaction { get; set; }
+        public int BuyPrice { get; set; }
     }
 }

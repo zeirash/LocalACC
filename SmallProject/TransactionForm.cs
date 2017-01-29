@@ -16,10 +16,10 @@ namespace SmallProject
     {
         Database1Entities6 de = new Database1Entities6();
         int currentId;
-        float totalJual, totalBeli, discount;
+        float totalJual, discount;
         bool _tInsert, _tUpdate, _dInsert, _dUpdate;
-        bool isNotaNum, isStatus, isDiscount, isNamaBrg, isQty, isSprice, isBprice;
-        DateTime date;
+        bool isNotaNum, isStatus, isDiscount, isNamaBrg, isQty, isSprice;
+        DateTime date, paidDate;
         string myDate;
         public TransactionForm(int currentId)
         {
@@ -27,7 +27,7 @@ namespace SmallProject
             this.ControlBox = false;
             this.currentId = currentId;
             //generate current time
-            dtpTransactionDate.Value = dtpTransactionSearch.Value = DateTime.Now;
+            dtpTransactionDate.Value = dtpTransactionSearch.Value = dtpPaidDate.Value = DateTime.Now;
             //getting current selected shop
             var query = (from x in de.tblShops
                          where x.ShopId == currentId
@@ -43,6 +43,8 @@ namespace SmallProject
             btnDInsert.Enabled = false;
             btnDUpdate.Enabled = false;
             btnDDelete.Enabled = false;
+            lblPaid.Visible = false;
+            dtpPaidDate.Visible = false;
         }
 
         private void update_transaction()
@@ -58,7 +60,8 @@ namespace SmallProject
                                       Diskon = x.Discount,
                                       Tanggal = x.Date,
                                       Status = x.Status,
-                                      Informasi = x.Information
+                                      Informasi = x.Information,
+                                      TanggalLunas = x.PaidDate
                                   }).ToList();
             transaction_grid.DataSource = bdtrans;
         }
@@ -74,10 +77,13 @@ namespace SmallProject
             txtNotaNum.Enabled = !change;
             txtDiscount.Enabled = !change;
             dtpTransactionDate.Enabled = !change;
+            dtpPaidDate.Enabled = !change;
             rtxtKeterangan.Enabled = !change;
             radBlmLunas.Enabled = !change;
             radLunas.Enabled = !change;
             detail_grid.Enabled = !change;
+            lblPaid.Visible = !change;
+            dtpPaidDate.Visible = !change;
         }
 
         private void modeDetail(bool change)
@@ -89,7 +95,6 @@ namespace SmallProject
             btnDCancel.Enabled = !change;
             txtNamaBarang.Enabled = !change;
             txtQuantity.Enabled = !change;
-            //txtHrgaBeli.Enabled = !change;
             txtHrgaJual.Enabled = !change;
         }
 
@@ -110,9 +115,7 @@ namespace SmallProject
                                 }).ToList();
             detail_grid.DataSource = bdDet;
             this.detail_grid.Columns["HargaJual"].DefaultCellStyle.Format = "##,#";
-            //this.detail_grid.Columns["HargaBeli"].DefaultCellStyle.Format = "##,#";
-            this.detail_grid.Columns["TotalJual"].DefaultCellStyle.Format = "##,#";
-            //this.detail_grid.Columns["TotalBeli"].DefaultCellStyle.Format = "##,#";            
+            this.detail_grid.Columns["TotalJual"].DefaultCellStyle.Format = "##,#";           
         }
 
         private void update_sum()
@@ -128,17 +131,14 @@ namespace SmallProject
 
                 if (detail_grid.RowCount > 0)
                 {
-                    //totalBeli = 0;
                     totalJual = 0;
                     foreach (DataGridViewRow rows in detail_grid.Rows)
                     {
-                        //totalBeli += int.Parse(rows.Cells[6].Value.ToString());
                         totalJual += int.Parse(rows.Cells[4].Value.ToString());
                     }
                     totalJual = totalJual - totalJual * (int)query.Discount / 100;
 
                     lblTotalJual.Text = totalJual.ToString("##,#");
-                    //lblTotalModal.Text = totalBeli.ToString("##,#");
                 }
             }
         }
@@ -159,7 +159,6 @@ namespace SmallProject
             detailId.Text = "";
             txtNamaBarang.Text = "";
             txtQuantity.Text = "";
-            //txtHrgaBeli.Text = "";
             txtHrgaJual.Text = "";
         }
 
@@ -213,8 +212,10 @@ namespace SmallProject
                 txtDiscount.Text = transaction_grid.Rows[e.RowIndex].Cells[2].Value.ToString();
                 dtpTransactionDate.Value = Convert.ToDateTime(transaction_grid.Rows[e.RowIndex].Cells[3].Value);
                 rtxtKeterangan.Text = transaction_grid.Rows[e.RowIndex].Cells[5].Value.ToString();
-                if (transaction_grid.Rows[e.RowIndex].Cells[4].Value.ToString().Equals("Lunas")) radLunas.Checked = true;
+                if (transaction_grid.Rows[e.RowIndex].Cells[4].Value.ToString().Equals("LUNAS")) radLunas.Checked = true;
                 else radBlmLunas.Checked = true;
+                if (transaction_grid.Rows[e.RowIndex].Cells[6].Value != "" && transaction_grid.Rows[e.RowIndex].Cells[6].Value != null)
+                    dtpPaidDate.Value = Convert.ToDateTime(transaction_grid.Rows[e.RowIndex].Cells[6].Value);
 
                 update_detail();
                 update_sum();
@@ -265,10 +266,28 @@ namespace SmallProject
                                       Diskon = x.Discount,
                                       Tanggal = x.Date,
                                       Status = x.Status,
-                                      Informasi = x.Information
+                                      Informasi = x.Information,
+                                      TanggalLunas = x.PaidDate
                                   }).ToList();
             transaction_grid.DataSource = bdtrans;
             clear_detail();
+        }
+
+        private void radLunas_CheckedChanged(object sender, EventArgs e)
+        {
+            lblPaid.Visible = true;
+            dtpPaidDate.Visible = true;
+        }
+
+        private void radBlmLunas_CheckedChanged(object sender, EventArgs e)
+        {
+            lblPaid.Visible = false;
+            dtpPaidDate.Visible = false;
+        }
+
+        private void dtpPaidDate_ValueChanged(object sender, EventArgs e)
+        {
+            paidDate = dtpPaidDate.Value;
         }
 
         private void btnTInsert_Click(object sender, EventArgs e)
@@ -373,8 +392,16 @@ namespace SmallProject
                         updateTransaction.NotaNumber = txtNotaNum.Text.ToUpper();
                         updateTransaction.Discount = discount;
                         updateTransaction.Date = date;
-                        if (radLunas.Checked == true) updateTransaction.Status = "LUNAS";
-                        else updateTransaction.Status = "BELUM LUNAS";
+                        if (radLunas.Checked == true)
+                        {
+                            updateTransaction.Status = "LUNAS";
+                            updateTransaction.PaidDate = paidDate;
+                        }
+                        else
+                        {
+                            updateTransaction.Status = "BELUM LUNAS";
+                            updateTransaction.PaidDate = null;
+                        }
                         updateTransaction.Information = rtxtKeterangan.Text.ToUpper();
 
                         MessageBox.Show("Success update data");
@@ -513,7 +540,7 @@ namespace SmallProject
             {
                 input_detail();
 
-                if (isNamaBrg && isQty && isSprice && isBprice)
+                if (isNamaBrg && isQty && isSprice)
                 {
                     //check klo transaction ud dbuat prtma kali
                     if (detail_grid.RowCount == 0)
@@ -527,7 +554,8 @@ namespace SmallProject
                                 Discount = discount,
                                 Date = date,
                                 Information = rtxtKeterangan.Text.ToUpper(),
-                                Status = "LUNAS"
+                                Status = "LUNAS",
+                                PaidDate = paidDate
                             };
                             de.tblTransactions.Add(newTransaction);
                         }
@@ -575,7 +603,7 @@ namespace SmallProject
 
                 input_detail();
 
-                if (isNamaBrg && isQty && isSprice && isBprice)
+                if (isNamaBrg && isQty && isSprice)
                 {
                     updateDetail.ProductName = txtNamaBarang.Text.ToUpper();
                     updateDetail.Quantity = int.Parse(txtQuantity.Text);

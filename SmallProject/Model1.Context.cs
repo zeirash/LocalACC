@@ -30,5 +30,6 @@ namespace SmallProject
         public virtual DbSet<tblJoin> tblJoins { get; set; }
         public virtual DbSet<tblShop> tblShops { get; set; }
         public virtual DbSet<tblTransaction> tblTransactions { get; set; }
+        public virtual DbSet<tblProduct> tblProducts { get; set; }
     }
 }
